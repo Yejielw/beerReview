@@ -1,0 +1,131 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+
+	<title></title>
+</head>
+<body ng-app="beerList">
+<div ng-controller="mainCtrl">
+  <div class="container">
+
+    <div class="container col-md-4 col-md-offset-8" >
+           <form class="form-inline" ng-show="!beersObj.user.LoggedIn ">
+            <div class="form-group">
+                
+                <input type="text" class="form-control" ng-model="UserName" placeholder="UserName">
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="password" ng-model="password"></input>
+            </div>
+            <button type="button" class="btn" ng-click="beersObj.login(UserName, password)">Login</button>
+        </form>
+    <span ng-show="beersObj.user.LoggedIn">
+    <button type="button" class="btn btn-danger" ng-click="beersObj.logout()">logout</button>
+    </span>
+    </div>
+
+
+       
+
+
+
+
+        <div class="row">
+
+            <div class="col-md-6 col-md-offset-3">
+                <h1 class="text-center">BeerList</h1>
+                <div class="page-header">
+                </div>
+                <div class="container-fluid">
+					<div class="row ">
+
+						<div class="col-md-4" ng-repeat="x in beersObj.beers">
+						    <div class="thumbnail">
+						      <a href="{{x.img}}">
+						        <img src="{{x.img}}" alt="{{x.name}}" style="width:100%">
+						        <div class="caption">
+						          <p>{{x.name}} is a {{x.style}} beer with a rating of {{x.rating[0]}} and a {{x.abv}}% alcohol </p>
+						        </div>
+						      </a>
+						      <button type="button" class="btn btn-danger btn-xs" ng-click="beersObj.removeBeer(x)" ng-if="beersObj.user.LoggedIn">Remove</button>
+						    </div>
+
+						</div>
+					</div>
+					<!-- <p ng-repeat="x in beersObj.avg">Your average rating is {{x}}</p> -->
+					<button type="button" class="btn btn-info" ng-click="beersObj.sortA()">Order by Ascending Order</button><span><button type="button" class="btn btn-primary" ng-click="beersObj.sortD()">Order by Descending Order</button></span>
+				
+
+ 				<div class="page-header">
+                </div>
+                <div class="container-fluid row">
+                    <div class="col-md-6">
+    				 <form >
+                        <h3>Add a new beer</h3>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Beer Name" ng-model="name"></input>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Style" ng-model="style"></input>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="ABV" ng-model="abv"></input>
+                        </div>
+                        <div class="form-group">
+
+                        	<select class="form-control" ng-model="rating">
+                   			  <option value="" selected>Rating</option>
+    						  <option value="1">1</option>
+    						  <option value="2">2</option>
+    						  <option value="3">3</option>
+    						  <option value="4">4</option>
+    						  <option value="5">5</option>
+    						</select>  
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Image URL" ng-model="image"></input>
+                        </div>
+                        <button type="button" class="btn btn-primary" ng-click="beersObj.add(name, style, abv, rating, image)">Add</button>
+                    </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form >
+                        <h3>Rate an existing Beer</h3>
+                        <div class="form-group">
+                           <select class="form-control" ng-model="ext">
+                              <option ng-repeat="x in beersObj.beers">{{x.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+
+                            <select class="form-control" ng-model="ring">
+                              <option value="" selected>Rating</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>  
+                        </div>
+                        <button type="button" class="btn btn-info" ng-click="beersObj.rate(ext,ring)">Rate</button>
+                            <!-- <select class="form-control" ng-model="rating" ng-repeat="x in beersObj.beers">
+                              <option value="" selected>Beers</option>
+                              <option  value="{{x.name}}">{{x.name}}</option>
+                            </select> -->  
+                        </div>
+                    </div>
+
+
+                </div>
+			</div>
+	</div>
+    
+</div>
+
+    <script src="angular/angular.js"></script>
+    <script src="app.js"></script>
+    <script src="beers.js"></script>
+    <script src="mainController.js"></script>
+</body>
+</html>
