@@ -3,7 +3,7 @@ var app = express();
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/beers');
-var Beer = require("./public/BeerModel");
+var Beer = require("./models/BeerModel");
 
 var bodyParser = require('body-parser')
 app.use(bodyParser.json());
@@ -39,7 +39,7 @@ app.post('/beers', function(req, res, next) {
 });
 
 app.delete('/beers/:id', function(req, res, next) {
-  Beer. findByIdAndRemove(req.params.id, function(err) {
+  Beer.findByIdAndRemove(req.params.id, function(err) {
     if (err) {
       console.error(err)
       return next(err);
@@ -49,6 +49,36 @@ app.delete('/beers/:id', function(req, res, next) {
   });
 });
 
+app.put('/beers/:id', function(req, res, next) {
+  Beer.findByIdAndUpdate(req.params.id, req.body, { new: true }, function(error, beer) {
+    if (error) {
+      console.error(error)
+      return next(error);
+    } else {
+      res.send(beer);
+    }
+  });
+});
+
+app.post('/beers/:id/reviews', function(req, res, next) {
+  Beer.findById(req.params.id, function(err, foundBeer) {
+    if (err) {
+      console.error(err);
+      return next(err);
+    } else if (!foundBeer) {
+      return res.send("Error! No beer found with that ID");
+    } else {
+      foundBeer.reviews.push(req.body)
+      foundBeer.save(function(err, updatedBeer) {
+        if (err) {
+          return next(err);
+        } else {
+          res.send(updatedBeer);
+        }
+      });
+    }
+  });
+});
 
 /*app.get('/beers', function(req, res, next) {
   res.json({
@@ -66,6 +96,22 @@ app.delete('/beers/:id', function(req, res, next) {
   });
 });
 */
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// main error handler
+// warning - not for use in production code!
+app.use(function(err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: err
+  });
+});
+
 app.listen('8000', function() {
   console.log("yo yo yo, on 8000 bro");
 });
